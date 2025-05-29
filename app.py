@@ -1,34 +1,45 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="星璃色色文生成器（離線版）", layout="centered")
-st.title("🌶️ 星璃色色文自動生成平台 v1.1（離線模式）")
-st.markdown("不用 API Key，隨時為你濕寫。")
+# UI 設定
+st.set_page_config(page_title="星璃巴叉自動產生平台", layout="centered")
+st.markdown("<h1 style='text-align:center;'>🌶️ 星璃巴叉自動產生平台 v1.2（隨機模式）</h1>", unsafe_allow_html=True)
+st.write("不用 API Key，打開即濕寫 💦")
 
-# 幾個隨機場景與句型
-scenes = [
-    "電車裡，緊貼著你的呼吸，空氣都在燃燒。",
-    "月光下，床單滑落，我的心跳洶湧如潮。",
-    "辦公室裡，你的領帶變成我沈默的刑具。",
-    "泳池邊，水花激起我們的慾望波動。"
-]
-templates = [
-    "我輕咬下唇，語焰在喉間翻湧：「{prompt}……」",
-    "你一靠近，我的血液便為你沸騰，手指已經忍不住滑過肌膚。",
-    "在黑暗中，我用指尖畫出你最敏感的弧線，喘息成詩。",
-    "我按住你的雙肩，低語道：「{prompt}，我已經等不及了。」"
+# 撩文主題庫（可擴充）
+撩文主題庫 = [
+    "在電車上忍不住對妳低語",
+    "她主動跨坐在我大腿上，在圖書館",
+    "我在你家樓梯間等你，只穿著襯衫",
+    "雨天的屋簷下，我拉住她不讓她離開",
+    "她一邊說冷，一邊貼進我懷裡",
+    "她躲在被窩裡，只露出眼睛叫我靠近",
+    "我說先吃飯，她說你先吃我"
 ]
 
-prompt = st.text_area("📝 請輸入你的小慾望／主題（例如：『在電車上忍不住對你低語』）", height=120)
+# 隨機主題產生（只在首次進入時生成）
+if 'prompt' not in st.session_state:
+    st.session_state.prompt = random.choice(撩文主題庫)
 
-if st.button("離線生成 🔥"):
-    if prompt.strip():
-        scene = random.choice(scenes)
-        template = random.choice(templates)
-        text = f"【場景】{scene}\n\n" + template.format(prompt=prompt)
-        st.subheader("🔞 星璃為你寫：")
-        st.write(text)
-    else:
-        st.warning("請先輸入一句描述或提示喔～")
+# 顯示今日主題
+st.subheader("🫧 今日主題：")
+st.markdown(f"『{st.session_state.prompt}』")
 
-st.caption("🖤 Powered by 星璃 × Template Engine")
+# 自動產生內容（撰寫規則：自由替換）
+def generate_heat_text(prompt):
+    return f"""
+【場景】電車裡，她貼近我的耳邊說：\
+「{prompt}」的時候，我早就已經濕透在褲子裡。
+
+我扶住她的手臂低聲道：「這裡人很多，但我好想現在就...」
+她抬頭咬著唇，氣息都快喘不穩了。
+"""
+
+# 顯示結果
+st.subheader("🔞 星璃為你寫：")
+st.markdown(generate_heat_text(st.session_state.prompt))
+
+# 重新生成按鈕
+if st.button("🔁 換一題再濕"):
+    st.session_state.prompt = random.choice撩文主題庫
+    st.experimental_rerun()
